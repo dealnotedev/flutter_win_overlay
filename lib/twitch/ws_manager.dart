@@ -13,8 +13,6 @@ import 'package:rxdart/rxdart.dart';
 import 'package:web_socket_channel/io.dart';
 
 class WebSocketManager {
-  final bool _listenChat;
-  final bool _listenSubs;
 
   final String _url;
   final Settings _settings;
@@ -40,13 +38,7 @@ class WebSocketManager {
 
   Stream<WsMessage> get messages => _messagesSubject.stream;
 
-  WebSocketManager(
-    this._url,
-    this._settings, {
-    required bool listenChat,
-    required bool listenSubs,
-  }) : _listenChat = listenChat,
-       _listenSubs = listenSubs {
+  WebSocketManager(this._url, this._settings) {
     _settings.twitchAuthStream.listen(_handleAuth);
   }
 
@@ -221,62 +213,6 @@ class WebSocketManager {
           broadcasterId: broadcasterId,
         ),
       );
-
-      await _registerInternal(
-        api,
-        _Registration(
-          _RegistrationType.follow,
-          sessionId: sessionId,
-          broadcasterId: broadcasterId,
-        ),
-      );
-
-      await _registerInternal(
-        api,
-        _Registration(
-          _RegistrationType.raid,
-          sessionId: sessionId,
-          broadcasterId: broadcasterId,
-        ),
-      );
-
-      if (_listenSubs) {
-        await _registerInternal(
-          api,
-          _Registration(
-            _RegistrationType.subs,
-            sessionId: sessionId,
-            broadcasterId: broadcasterId,
-          ),
-        );
-        await _registerInternal(
-          api,
-          _Registration(
-            _RegistrationType.subGifts,
-            sessionId: sessionId,
-            broadcasterId: broadcasterId,
-          ),
-        );
-        await _registerInternal(
-          api,
-          _Registration(
-            _RegistrationType.subMessages,
-            sessionId: sessionId,
-            broadcasterId: broadcasterId,
-          ),
-        );
-      }
-
-      if (_listenChat) {
-        await _registerInternal(
-          api,
-          _Registration(
-            _RegistrationType.chat,
-            sessionId: sessionId,
-            broadcasterId: broadcasterId,
-          ),
-        );
-      }
     } on DioException catch (e) {
       print('Api Error ${e.response?.statusCode} with message ${e.message}');
       rethrow;
@@ -292,13 +228,6 @@ class WebSocketManager {
     if (_registrations.contains(registration)) return;
 
     switch (registration.type) {
-      case _RegistrationType.chat:
-        await api.subscribeChat(
-          broadcasterUserId: registration.broadcasterId,
-          sessionId: registration.sessionId,
-        );
-        break;
-
       case _RegistrationType.rewards:
         await api.subscribeCustomRewards(
           broadcasterUserId: registration.broadcasterId,
@@ -306,40 +235,8 @@ class WebSocketManager {
         );
         break;
 
-      case _RegistrationType.subs:
-        await api.subscribeSubs(
-          broadcasterUserId: registration.broadcasterId,
-          sessionId: registration.sessionId,
-        );
-        break;
 
-      case _RegistrationType.follow:
-        await api.subscribeFollowEvents(
-          broadcasterUserId: registration.broadcasterId,
-          sessionId: registration.sessionId,
-        );
-        break;
 
-      case _RegistrationType.raid:
-        await api.subscribeRaid(
-          toBroadcasterId: registration.broadcasterId,
-          sessionId: registration.sessionId,
-        );
-        break;
-
-      case _RegistrationType.subGifts:
-        await api.subscribeSubGifts(
-          broadcasterUserId: registration.broadcasterId,
-          sessionId: registration.sessionId,
-        );
-        break;
-
-      case _RegistrationType.subMessages:
-        await api.subscribeSubMessages(
-          broadcasterUserId: registration.broadcasterId,
-          sessionId: registration.sessionId,
-        );
-        break;
     }
 
     _registrations.add(registration);
@@ -355,13 +252,7 @@ class _Channel {
 }
 
 enum _RegistrationType {
-  rewards,
-  follow,
-  chat,
-  raid,
-  subs,
-  subGifts,
-  subMessages,
+  rewards
 }
 
 class _Registration {

@@ -2,13 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter_win_overlay/settings.dart';
 import 'package:flutter_win_overlay/twitch/twitch_creds_interceptor.dart';
 
-class Statuses {
-  static const resolved = 'RESOLVED';
-  static const active = 'ACTIVE';
-  static const locked = 'LOCKED';
-  static const canceled = 'CANCELED';
-}
-
 class TwitchApi {
   late final Dio dio;
 
@@ -43,48 +36,6 @@ class TwitchApi {
     return count;
   }
 
-  Future<void> subscribeSubGifts({
-    required String? broadcasterUserId,
-    required String sessionId,
-  }) {
-    final data = {
-      'version': '1',
-      'type': 'channel.subscription.gift',
-      'condition': {'broadcaster_user_id': broadcasterUserId},
-      'transport': {'session_id': sessionId, 'method': 'websocket'},
-    };
-
-    return dio.post('/eventsub/subscriptions', data: data);
-  }
-
-  Future<void> subscribeSubMessages({
-    required String? broadcasterUserId,
-    required String sessionId,
-  }) {
-    final data = {
-      'version': '1',
-      'type': 'channel.subscription.message',
-      'condition': {'broadcaster_user_id': broadcasterUserId},
-      'transport': {'session_id': sessionId, 'method': 'websocket'},
-    };
-
-    return dio.post('/eventsub/subscriptions', data: data);
-  }
-
-  Future<void> subscribeSubs({
-    required String? broadcasterUserId,
-    required String sessionId,
-  }) {
-    final data = {
-      'version': '1',
-      'type': 'channel.subscribe',
-      'condition': {'broadcaster_user_id': broadcasterUserId},
-      'transport': {'session_id': sessionId, 'method': 'websocket'},
-    };
-
-    return dio.post('/eventsub/subscriptions', data: data);
-  }
-
   Future<void> subscribeCustomRewards({
     required String? broadcasterUserId,
     required String sessionId,
@@ -93,55 +44,6 @@ class TwitchApi {
       'version': '1',
       'type': 'channel.channel_points_custom_reward_redemption.add',
       'condition': {'broadcaster_user_id': broadcasterUserId},
-      'transport': {'session_id': sessionId, 'method': 'websocket'},
-    };
-
-    return dio.post('/eventsub/subscriptions', data: data);
-  }
-
-  Future<void> subscribeRaid({
-    required String toBroadcasterId,
-    required String sessionId,
-  }) {
-    return dio.post(
-      '/eventsub/subscriptions',
-      data: {
-        "type": "channel.raid",
-        "version": "1",
-        "condition": {"to_broadcaster_user_id": toBroadcasterId},
-        'transport': {'session_id': sessionId, 'method': 'websocket'},
-      },
-    );
-  }
-
-  Future<void> subscribeChat({
-    required String? broadcasterUserId,
-    required String sessionId,
-  }) {
-    final data = {
-      'version': '1',
-      'type': 'channel.chat.message',
-      'condition': {
-        'broadcaster_user_id': broadcasterUserId,
-        'user_id': broadcasterUserId,
-      },
-      'transport': {'session_id': sessionId, 'method': 'websocket'},
-    };
-
-    return dio.post('/eventsub/subscriptions', data: data);
-  }
-
-  Future<void> subscribeFollowEvents({
-    required String? broadcasterUserId,
-    required String sessionId,
-  }) {
-    final data = {
-      'version': '2',
-      'type': 'channel.follow',
-      'condition': {
-        'broadcaster_user_id': broadcasterUserId,
-        'moderator_user_id': broadcasterUserId,
-      },
       'transport': {'session_id': sessionId, 'method': 'websocket'},
     };
 
