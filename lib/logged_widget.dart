@@ -1,5 +1,6 @@
 import 'dart:async';
-import 'dart:math';
+import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_win_overlay/di/service_locator.dart';
@@ -13,6 +14,7 @@ import 'package:flutter_win_overlay/twitch/ws_event.dart';
 import 'package:flutter_win_overlay/twitch/ws_manager.dart';
 
 class LoggedWidget extends StatefulWidget {
+
   final ServiceLocator locator;
   final TwitchCreds creds;
 
@@ -29,6 +31,23 @@ class _State extends State<LoggedWidget> {
   late WsState _state;
   late Settings _settings;
 
+  static const _flashbangDefaultReward = 'Flashbang';
+
+  Future<void> _overrideWithConfig() async {
+    final settings = File('config.json');
+
+    try {
+      final config = json.decode(await settings.readAsString());
+      final customFlashbangReward = config['flashbang'] as String?;
+
+      if (customFlashbangReward != null) {
+        _flashbangRewardName = customFlashbangReward;
+      }
+    } catch (_) {}
+  }
+
+  String _flashbangRewardName = _flashbangDefaultReward;
+
   @override
   void initState() {
     _settings = widget.locator.provide();
@@ -38,6 +57,8 @@ class _State extends State<LoggedWidget> {
 
     _eventsSubscription = ws.messages.listen(_handleWebsocketMessage);
     _stateSubscription = ws.state.listen(_handleWebsocketState);
+
+    _overrideWithConfig();
     super.initState();
   }
 
@@ -88,10 +109,9 @@ class _State extends State<LoggedWidget> {
         height: 8,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(4),
-          color:
-              _state == WsState.connected
-                  ? Color(0xFF51FD0B)
-                  : Color(0xFFCD0017),
+          color: _state == WsState.connected
+              ? Color(0xFF51FD0B)
+              : Color(0xFFCD0017),
         ),
       ),
     );
@@ -100,9 +120,7 @@ class _State extends State<LoggedWidget> {
   final _receivedEventIds = <String>{};
 
   Future<void> _handleFlashbang(UserRedeemedEvent reward) async {
-    final flashbang = Flashbang(
-      id: reward.id
-    );
+    final flashbang = Flashbang(id: reward.id);
 
     setState(() {
       _flashbang = flashbang;
@@ -118,7 +136,7 @@ class _State extends State<LoggedWidget> {
   }
 
   Future<void> _handleReward(UserRedeemedEvent reward) async {
-    if ('Флешбенг' == reward.reward) {
+    if (reward.reward == _flashbangRewardName) {
       _handleFlashbang(reward);
       return;
     }
@@ -143,7 +161,7 @@ class _State extends State<LoggedWidget> {
         userId != null &&
         userName != null &&
         reward != null) {
-      final UserDto? user = await _getUser(userId);
+      final user = await _getUser(userId);
 
       final event = UserRedeemedEvent(
         eventId,

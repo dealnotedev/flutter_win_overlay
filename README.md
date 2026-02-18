@@ -42,7 +42,7 @@ You can customize the reward button name directly in the `config.json` file:
 
 ```json
 {
-  "reward": "Flashbang"
+  "flashbang": "Flashbang"
 }
 ```
 
