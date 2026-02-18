@@ -1,17 +1,73 @@
-# flutter_win_overlay
+# ⚡ Flashbang Overlay for Twitch Streams
 
-A new Flutter project.
+Turn your Twitch chat into a chaotic battlefield.
 
-## Getting Started
+**Flashbang Overlay** is a Windows desktop application that runs as a real-time in-game overlay, allowing viewers to interact directly with the stream. With a single command or channel points action, viewers can throw a virtual **flashbang** at the streamer — briefly blinding the screen with a cinematic effect inspired by classic tactical shooters like Counter-Strike.
 
-This project is a starting point for a Flutter application.
+---
 
-A few resources to get you started if this is your first Flutter project:
+## 🎮 What It Does
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+The application launches as a lightweight overlay above your game window and listens to Twitch events in real time. When triggered by viewers, it plays a flashbang animation, temporarily “blinding” the streamer and creating intense, funny, and unpredictable moments during gameplay.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Perfect for:
+
+* Interactive Twitch streams
+* Competitive FPS gameplay
+* Community-driven chaos
+
+---
+
+## 🖼 Example
+
+Below is an example of how the flashbang effect looks during gameplay:
+
+![Flashbang Example](images/example.gif)
+
+---
+
+## 🚀 How It Works
+
+1. Run the application on Windows.
+2. Connect your Twitch account.
+3. Configure the trigger (channel points reward or command).
+4. Launch your game — the overlay will appear automatically.
+5. Let your viewers cause chaos.
+
+---
+
+## ⚙️ Configuration
+
+You can customize the reward button name directly in the `config.json` file:
+
+```json
+{
+  "reward": "Flashbang"
+}
+```
+
+Change the value of `reward` to match the Twitch Channel Points action or command you want viewers to trigger. This allows you to fully localize or rename the flashbang interaction without rebuilding the application.
+
+---
+
+## 💡 Use Cases
+
+* Add stakes to clutch moments
+* Reward viewers with real influence over gameplay
+* Create hilarious “panic” situations on stream
+
+---
+
+## ⚠️ Disclaimer
+
+This project is intended for entertainment purposes. Use responsibly — your viewers *will* abuse it.
+
+---
+
+## ❤️ Contributing
+
+Pull requests, ideas, and feedback are welcome. If you build cool integrations or new effects — share them!
+
+---
+
+Enjoy the flash… and try not to get blinded. 💥
