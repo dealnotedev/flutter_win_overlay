@@ -46,7 +46,7 @@ You can customize the reward button name directly in the `config.json` file:
 }
 ```
 
-Change the value of `reward` to match the Twitch Channel Points action you want viewers to trigger. This allows you to fully localize or rename the flashbang interaction without rebuilding the application.
+Change the value of `flashbang` to match the Twitch Channel Points action you want viewers to trigger. This allows you to fully localize or rename the flashbang interaction without rebuilding the application.
 
 ---
 

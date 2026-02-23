@@ -14,7 +14,6 @@ import 'package:flutter_win_overlay/twitch/ws_event.dart';
 import 'package:flutter_win_overlay/twitch/ws_manager.dart';
 
 class LoggedWidget extends StatefulWidget {
-
   final ServiceLocator locator;
   final TwitchCreds creds;
 
@@ -32,6 +31,7 @@ class _State extends State<LoggedWidget> {
   late Settings _settings;
 
   static const _flashbangDefaultReward = 'Flashbang';
+  static const _flashbangDefaultColor = Colors.white;
 
   Future<void> _overrideWithConfig() async {
     final settings = File('config.json');
@@ -39,14 +39,19 @@ class _State extends State<LoggedWidget> {
     try {
       final config = json.decode(await settings.readAsString());
       final customFlashbangReward = config['flashbang'] as String?;
+      final customFlashbangColor = config['flashbang_color'] as String?;
 
       if (customFlashbangReward != null) {
         _flashbangRewardName = customFlashbangReward;
+      }
+      if (customFlashbangColor != null) {
+        _flashbangColor = _hexToColor(customFlashbangColor);
       }
     } catch (_) {}
   }
 
   String _flashbangRewardName = _flashbangDefaultReward;
+  Color _flashbangColor = _flashbangDefaultColor;
 
   @override
   void initState() {
@@ -75,6 +80,15 @@ class _State extends State<LoggedWidget> {
     super.dispose();
   }
 
+  static Color _hexToColor(String hex) {
+    final buffer = StringBuffer();
+    if (hex.length == 7) {
+      buffer.write('ff');
+    }
+    buffer.write(hex.replaceFirst('#', ''));
+    return Color(int.parse(buffer.toString(), radix: 16));
+  }
+
   Flashbang? _flashbang;
 
   @override
@@ -91,6 +105,7 @@ class _State extends State<LoggedWidget> {
               FlashbangWidget(
                 constraints: constraints,
                 flashbang: flashbang,
+                color: _flashbangColor,
                 key: ValueKey(flashbang.id),
               ),
             ],

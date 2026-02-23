@@ -6,11 +6,13 @@ import 'package:flutter_win_overlay/generated/assets.dart';
 class FlashbangWidget extends StatefulWidget {
   final Flashbang flashbang;
   final BoxConstraints constraints;
+  final Color color;
 
   const FlashbangWidget({
     super.key,
     required this.constraints,
     required this.flashbang,
+    required this.color
   });
 
   @override
@@ -129,7 +131,7 @@ class _State extends State<FlashbangWidget>
         child: Container(
           width: double.infinity,
           height: double.infinity,
-          color: Colors.white,
+          color: widget.color,
         ),
       );
     }
